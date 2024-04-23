@@ -57,14 +57,33 @@ public class MemberService {
         return memberResDtoList;
     }
 
+
     // 회원 정보 수정
     public void updateMember(Long memberId, MemberReqDto requestDto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("해당 회원을 찾을 수 없습니다."));
-        // 요청 DTO의 정보로 회원 엔티티를 업데이트
-        member.updateMember(requestDto);
+        //비밀번호 변경
+        if (requestDto.getPassword() != null && !requestDto.getPassword().isEmpty()) {
+            member.setPassword(requestDto.getPassword());
+        }
+        //이름 변경
+        if (requestDto.getName() != null && !requestDto.getName().isEmpty()) {
+            member.setName(requestDto.getName());
+        }
+        //닉네임 변경
+        if (requestDto.getNickName() != null && !requestDto.getNickName().isEmpty()) {
+            member.setNickName(requestDto.getNickName());
+        }
+        //휴대폰 번호 변경
+        if (requestDto.getPhoneNum() != null && !requestDto.getPhoneNum().isEmpty()) {
+            member.setPhoneNum(requestDto.getPhoneNum());
+        }
+        //이메일 번호 변경
+        if (requestDto.getEmail() != null && !requestDto.getEmail().isEmpty()) {
+            member.setEmail(requestDto.getEmail());
+        }
         memberRepository.save(member);
-        log.info("회원 정보 수정 완료: {} ", member.getMemberId());
+        log.info("회원 정보 수정 완료: {}", member.getMemberId());
     }
 
 }

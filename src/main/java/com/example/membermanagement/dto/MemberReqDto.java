@@ -1,5 +1,6 @@
 package com.example.membermanagement.dto;
 
+import com.example.membermanagement.entity.Member;
 import lombok.*;
 
 @Getter @Setter
@@ -17,7 +18,19 @@ public class MemberReqDto {
     //닉네임
     private String nickName;
     //전화번호
-    private Integer phoneNum;
+    private String phoneNum;
     //이메일
     private String email;
+
+    // MemberReqDto -> Member엔티티
+    public Member toEntity() {
+        return Member.builder()
+                .memberId(this.memberId)
+                .password(this.password)
+                .name(this.name)
+                .nickName(this.nickName)
+                .phoneNum(this.phoneNum)
+                .email(this.email)
+                .build();
+    }
 }

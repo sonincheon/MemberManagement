@@ -1,6 +1,9 @@
 package com.example.membermanagement.dto;
 
+import com.example.membermanagement.entity.Member;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter @Setter
 @ToString
@@ -15,7 +18,21 @@ public class MemberResDto {
     //닉네임
     private String nickName;
     //전화번호
-    private Integer phoneNum;
+    private String phoneNum;
     //이메일
     private String email;
+    //가입일자
+    private LocalDateTime regDate;
+
+    // Member엔티티 -> MemberResDto
+    public static MemberResDto of(Member member) {
+        return MemberResDto.builder()
+                .memberId(member.getMemberId())
+                .name(member.getName())
+                .nickName(member.getNickName())
+                .phoneNum(member.getPhoneNum())
+                .email(member.getEmail())
+                .regDate(member.getRegDate())
+                .build();
+    }
 }

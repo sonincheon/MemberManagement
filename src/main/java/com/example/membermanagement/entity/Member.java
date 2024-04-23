@@ -1,5 +1,6 @@
 package com.example.membermanagement.entity;
 
+import com.example.membermanagement.dto.MemberReqDto;
 import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -43,14 +44,14 @@ public class Member {
         regDate = LocalDateTime.now();
     }
 
-    // 맴버 생성 객체 사용을 위한 Builder
-    @Builder
-    public Member(String memberId, String password, String name, String phoneNum,String email) {
-        this.memberId=memberId;
-        this.password=password;
-        this.name=name;
-        this.phoneNum=phoneNum;
-        this.email =email;
+    // 회원 정보 업데이트 메서드
+    public void updateMember(MemberReqDto requestDto) {
+        this.setMemberId(requestDto.getMemberId());
+        this.setPassword(requestDto.getPassword());
+        this.setName(requestDto.getName());
+        this.setNickName(requestDto.getNickName());
+        this.setPhoneNum(requestDto.getPhoneNum());
+        this.setEmail(requestDto.getEmail());
     }
 
 

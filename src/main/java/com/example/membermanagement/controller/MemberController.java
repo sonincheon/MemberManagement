@@ -12,12 +12,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.example.membermanagement.utils.Common.CORS_ORIGIN;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/user")
-@CrossOrigin(origins = CORS_ORIGIN)
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
@@ -60,6 +58,21 @@ public class MemberController {
         try {
             memberService.updateMember(id, requestDto);
             return ResponseEntity.ok("회원 정보가 수정되었습니다.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    // 비밀번호 확인 Controller
+    @PostMapping("/verifyPw/{id}")
+    public ResponseEntity<String> verifyPassword(@PathVariable Long id, @RequestParam String password) {
+        try {
+            boolean isValid = memberService.verifyPassword(id, password);
+            if (isValid) {
+                return ResponseEntity.ok("비밀번호가 일치합니다.");
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호가 일치하지 않습니다.");
+            }
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

@@ -1,6 +1,7 @@
 package com.example.membermanagement.service;
 
 
+import com.example.membermanagement.Security.PasswordEnCoder;
 import com.example.membermanagement.dto.MemberReqDto;
 import com.example.membermanagement.dto.MemberResDto;
 import com.example.membermanagement.entity.Member;
@@ -26,10 +27,21 @@ public class MemberService {
     public void signUp(MemberReqDto requestDto) {
         // 요청 DTO를 엔티티로 변환
         Member member = requestDto.toEntity();
+        // 유효성 메세지
+        String errorMessage = member.validate();
+        // 유효성 검사
+        if (!errorMessage.isEmpty()) {
+            throw new IllegalArgumentException(errorMessage);
+        }
         // 회원 아이디 중복 체크
         if (memberRepository.existsByMemberId(member.getMemberId())) {
             throw new RuntimeException("이미 사용 중인 회원 아이디 입니다.");
         }
+
+        // 비밀번호 암호화
+        String encodedPassword = PasswordEnCoder.encodePassword(member.getPassword());
+        member.setPassword(encodedPassword);
+
         // 회원 저장
         memberRepository.save(member);
         log.info("회원가입 완료 : {}", member.getMemberId());
@@ -62,9 +74,15 @@ public class MemberService {
     public void updateMember(Long memberId, MemberReqDto requestDto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("해당 회원을 찾을 수 없습니다."));
-        //비밀번호 변경
+        // 전화번호, 이메일 유효성검사
+        if (!requestDto.validate()) {
+            throw new IllegalArgumentException("요청된 회원 정보가 올바르지 않습니다.");
+        }
+        // 비밀번호 변경
         if (requestDto.getPassword() != null && !requestDto.getPassword().isEmpty()) {
-            member.setPassword(requestDto.getPassword());
+            // 비밀번호 암호화
+            String encodedPassword = PasswordEnCoder.encodePassword(requestDto.getPassword());
+            member.setPassword(encodedPassword);
         }
         //이름 변경
         if (requestDto.getName() != null && !requestDto.getName().isEmpty()) {
@@ -84,6 +102,15 @@ public class MemberService {
         }
         memberRepository.save(member);
         log.info("회원 정보 수정 완료: {}", member.getMemberId());
+    }
+
+    // 비밀번호 확인
+    public boolean verifyPassword(Long Id, String password) {
+        // 사용자 아이디로 사용자 정보를 조회
+        Member member = memberRepository.findById(Id)
+                .orElseThrow(() -> new RuntimeException("해당 사용자를 찾을 수 없습니다."));
+        // 조회된 사용자 정보의 암호화된 비밀번호와 입력된 비밀번호를 비교하여 일치 여부를 반환
+        return PasswordEnCoder.checkPassword(password, member.getPassword());
     }
 
 }

@@ -1,10 +1,10 @@
 package com.example.membermanagement.entity;
 
-import com.example.membermanagement.dto.MemberReqDto;
 import lombok.*;
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.regex.Pattern;
+
 
 @Entity
 @NoArgsConstructor
@@ -44,15 +44,33 @@ public class Member {
         regDate = LocalDateTime.now();
     }
 
-    // 회원 정보 업데이트 메서드
-    public void updateMember(MemberReqDto requestDto) {
-        this.setMemberId(requestDto.getMemberId());
-        this.setPassword(requestDto.getPassword());
-        this.setName(requestDto.getName());
-        this.setNickName(requestDto.getNickName());
-        this.setPhoneNum(requestDto.getPhoneNum());
-        this.setEmail(requestDto.getEmail());
+    //유효성 검사
+    public String validate() {
+        StringBuilder errorMessage = new StringBuilder();
+        if (memberId == null || memberId.isEmpty()) {
+            errorMessage.append("회원 아이디를 입력하세요.\n");
+        }
+        if (password == null || password.isEmpty()) {
+            errorMessage.append("비밀번호를 입력하세요.\n");
+        }
+        if (name == null || name.isEmpty()) {
+            errorMessage.append("이름을 입력하세요.\n");
+        }
+        if (nickName == null || nickName.isEmpty()) {
+            errorMessage.append("닉네임을 입력하세요.\n");
+        }
+        if (phoneNum != null && !phoneNum.isEmpty()) {
+            Pattern phonePattern = Pattern.compile("\\d{3}-\\d{3,4}-\\d{4}");
+            if (!phonePattern.matcher(phoneNum).matches()) {
+                errorMessage.append("올바른 전화번호 형식이 아닙니다. (XXX-XXXX-XXXX 또는 XXX-XXX-XXXX)\n");
+            }
+        }
+        if (email != null && !email.isEmpty()) {
+            Pattern emailPattern = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+            if (!emailPattern.matcher(email).matches()) {
+                errorMessage.append("올바른 이메일 형식이 아닙니다.\n");
+            }
+        }
+        return errorMessage.toString();
     }
-
-
 }

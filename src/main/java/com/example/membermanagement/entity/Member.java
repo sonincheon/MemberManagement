@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter @Setter
 @ToString
 @Table(name = "member_tb")
 public class Member {
@@ -21,12 +22,15 @@ public class Member {
     private String memberId;
     //비밀번호
     @Column(nullable = false)
-    private Integer password;
+    private String password;
     //이름
     @Column(nullable = false)
     private String name;
+    //닉네임
+    @Column(nullable = false)
+    private String nickName;
     //전화번호
-    private Integer phoneNum;
+    private String phoneNum;
     //이메일
     private String email;
 
@@ -41,7 +45,7 @@ public class Member {
 
     // 맴버 생성 객체 사용을 위한 Builder
     @Builder
-    public Member(String memberId, Integer password, String name, Integer phoneNum,String email) {
+    public Member(String memberId, String password, String name, String phoneNum,String email) {
         this.memberId=memberId;
         this.password=password;
         this.name=name;

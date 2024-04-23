@@ -14,7 +14,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Slf4j
 @Configuration
 @EnableSwagger2
-public class swaggerConfiguration {
+public class SwaggerConfiguration {
+
     @Bean
     public Docket api() {
         log.info("스웨거 api() 함수 호출 !!");

@@ -1,4 +1,4 @@
-# Spring Boot 회원 관리
+# Spring Boot 회원 관리(과제 제출용)
 
 ## 사용 스택
 - JDK 1.8 (Java 8)
